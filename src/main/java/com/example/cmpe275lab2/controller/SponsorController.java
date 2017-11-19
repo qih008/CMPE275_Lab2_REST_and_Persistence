@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.cmpe275lab2.model.Address;
 import com.example.cmpe275lab2.model.Player;
 import com.example.cmpe275lab2.model.Sponsor;
 import com.example.cmpe275lab2.repository.SponsorRepository;
@@ -26,7 +27,26 @@ public class SponsorController {
 	
     // Create a new Sponsor
 	@PostMapping("/sponsor")
-	public Sponsor createSponsor(@Valid @RequestBody Sponsor sponsor) {
+	public Sponsor createSponsor(
+			@RequestParam(value="name", required=true) String name,
+			@RequestParam(value="description", required=false) String description,
+			@RequestParam(value="street", required=false) String street,
+			@RequestParam(value="city", required=false) String city,
+			@RequestParam(value="state", required=false) String state,
+			@RequestParam(value="zip", required=false) String zip) 
+	{
+		Address address = new Address();
+		address.setCity(city);
+		address.setState(state);
+		address.setStreet(street);
+		address.setZip(zip);
+		
+		Sponsor sponsor = new Sponsor();
+		
+		sponsor.setName(name);
+		sponsor.setAddress(address);
+		sponsor.setDescription(description);
+		
 	    return sponsorRepository.save(sponsor);
 	}
 
@@ -43,14 +63,27 @@ public class SponsorController {
     // Update a Sponsor
 	@PutMapping("/sponsor/{id}")
 	public ResponseEntity<Sponsor> updateSponsor(@PathVariable(value = "id") Long sponsorId, 
-	                                       @Valid @RequestBody Sponsor sponsorDetails) {
+			@RequestParam(value="name", required=true) String name,
+			@RequestParam(value="description", required=false) String description,
+			@RequestParam(value="street", required=false) String street,
+			@RequestParam(value="city", required=false) String city,
+			@RequestParam(value="state", required=false) String state,
+			@RequestParam(value="zip", required=false) String zip)
+    {
 	    Sponsor sponsor = sponsorRepository.findOne(sponsorId);
 	    if(sponsor == null) {
 	        return ResponseEntity.notFound().build();
 	    }
-	    sponsor.setName(sponsorDetails.getName());
-	    sponsor.setDescription(sponsorDetails.getDescription());
-	    sponsor.setAddress(sponsorDetails.getAddress());
+	    
+	    Address address = new Address();
+		address.setCity(city);
+		address.setState(state);
+		address.setStreet(street);
+		address.setZip(zip);
+		
+	    sponsor.setName(name);
+	    sponsor.setDescription(description);
+	    sponsor.setAddress(address);
 
 	    Sponsor updatedSponsor = sponsorRepository.save(sponsor);
 	    return ResponseEntity.ok(updatedSponsor);

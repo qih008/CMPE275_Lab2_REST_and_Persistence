@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.example.cmpe275lab2.model.Address;
 import com.example.cmpe275lab2.model.Player;
 import com.example.cmpe275lab2.model.Sponsor;
 import com.example.cmpe275lab2.repository.PlayerRepository;
@@ -31,24 +32,51 @@ public class PlayerController {
 	
     // Create a new Player
 	@PostMapping("/player")
-	public ResponseEntity<Player> createPlayer(@Valid @RequestBody Player player) {
+	public ResponseEntity<Player> createPlayer( 
+			@RequestParam(value="firstname", required=true) String firstname,
+			@RequestParam(value="lastname", required=true) String lastname,
+			@RequestParam(value="email", required=true) String email,
+			@RequestParam(value="description", required=false) String description,
+			@RequestParam(value="street", required=false) String street,
+			@RequestParam(value="city", required=false) String city,
+			@RequestParam(value="state", required=false) String state,
+			@RequestParam(value="zip", required=false) String zip,
+			@RequestParam(value="sponsor", required=false) Long sponsor_id) 
+	{
+
+		Player player = new Player();
 		
 		// check duplicate email for new player
 		List<Player> playerList = playerRepository.findAll();
 		for(int i = 0; i < playerList.size(); i++){
 			Player temp = playerList.get(i);
-			if(temp.getEmail().equals(player.getEmail()))
+			if(temp.getEmail().equals(email))
 				return ResponseEntity.badRequest().build();
 		}
 		
-		if(player.getSponsor() != null){
-		    Sponsor sponsor = sponsorRepository.findOne(player.getSponsor().getId());
+		
+		//System.out.print(player.getId());
+		if(sponsor_id != null){
+		    Sponsor sponsor = sponsorRepository.findOne(sponsor_id);
 		    if(sponsor != null){
 			    player.setSponsor(sponsor);
 		    }
 		    else
-		    	return ResponseEntity.badRequest().build();
+		        return ResponseEntity.badRequest().build();
 		}
+		
+		Address address = new Address();
+		address.setCity(city);
+		address.setState(state);
+		address.setStreet(street);
+		address.setZip(zip);
+		
+		player.setFirstname(firstname);
+		player.setLastname(lastname);
+		player.setEmail(email);
+		player.setAddress(address);
+		player.setDescription(description);
+		
 		
 	    Player newplayer = playerRepository.save(player);
 	    return ResponseEntity.ok(newplayer);
@@ -66,26 +94,56 @@ public class PlayerController {
 
     // Update a Player
 	@PutMapping("/player/{id}")
-	public ResponseEntity<Player> updatePlayer(@PathVariable(value = "id") Long playerId, 
-	                                       @Valid @RequestBody Player playerDetails) {
+	public ResponseEntity<Player> updatePlayer(@PathVariable(value = "id") Long playerId,                                     
+	        @RequestParam(value="firstname", required=true) String firstname,
+	        @RequestParam(value="lastname", required=true) String lastname,
+	        @RequestParam(value="email", required=true) String email,
+	        @RequestParam(value="description", required=false) String description,
+	        @RequestParam(value="street", required=false) String street,
+	        @RequestParam(value="city", required=false) String city,
+	        @RequestParam(value="state", required=false) String state,
+	        @RequestParam(value="zip", required=false) String zip,
+	        @RequestParam(value="sponsor", required=false) Long sponsor_id) 
+	{
 	    Player player = playerRepository.findOne(playerId);
 	    if(player == null) {
 	        return ResponseEntity.notFound().build();
 	    }
-	    player.setFirstname(playerDetails.getFirstname());
-	    player.setLastname(playerDetails.getLastname());
-	    player.setEmail(playerDetails.getEmail());
-	    player.setDescription(playerDetails.getDescription());
-	    player.setAddress(playerDetails.getAddress());
-	   
-	    if(playerDetails.getSponsor() != null){
-		    Sponsor sponsor = sponsorRepository.findOne(playerDetails.getSponsor().getId());
+	    
+	    // check duplicate email for updated player
+	 	List<Player> playerList = playerRepository.findAll();
+	 	for(int i = 0; i < playerList.size(); i++){
+	 		Player temp = playerList.get(i);
+	 		if(temp.getEmail().equals(email) && !player.getEmail().equals(email))
+	 			return ResponseEntity.badRequest().build();
+	 	}
+	    
+	    if(sponsor_id != null){
+	    	//System.out.println(sponsor_id);
+	    	
+	        Sponsor sponsor = sponsorRepository.findOne(sponsor_id);
 		    if(sponsor != null){
 			    player.setSponsor(sponsor);
+			    //System.out.println("!!!!!!!!!!!!");
 		    }
-		}
+		    else
+			    return ResponseEntity.badRequest().build();
+	    }
 	    else
-	    	player.setSponsor(playerDetails.getSponsor());
+	    	player.setSponsor(null);
+	    
+	    Address address = new Address();
+		address.setCity(city);
+		address.setState(state);
+		address.setStreet(street);
+		address.setZip(zip);
+		
+	    player.setFirstname(firstname);
+		player.setLastname(lastname);
+		player.setEmail(email);
+		player.setAddress(address);
+		player.setDescription(description);	
+		
 	    
 	    Player updatedPlayer = playerRepository.save(player);
 	    return ResponseEntity.ok(updatedPlayer);

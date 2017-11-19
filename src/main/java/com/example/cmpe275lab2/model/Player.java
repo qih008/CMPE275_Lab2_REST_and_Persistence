@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 @Entity
 @Table(name = "player")
-@EntityListeners(AuditingEntityListener.class)
 public class Player implements Serializable{
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -49,6 +48,7 @@ public class Player implements Serializable{
     private List<Player> opponents = new ArrayList<>();
     
     // constructors, setters, getters, etc.
+    
     public void setId(Long id){
     	this.id = id;
     }
