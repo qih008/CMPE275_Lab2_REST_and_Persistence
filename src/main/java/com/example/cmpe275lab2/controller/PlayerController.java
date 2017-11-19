@@ -10,6 +10,8 @@ import com.example.cmpe275lab2.repository.PlayerRepository;
 import com.example.cmpe275lab2.repository.SponsorRepository;
 
 import javax.validation.Valid;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -29,14 +31,27 @@ public class PlayerController {
 	
     // Create a new Player
 	@PostMapping("/player")
-	public Player createPlayer(@Valid @RequestBody Player player) {
+	public ResponseEntity<Player> createPlayer(@Valid @RequestBody Player player) {
+		
+		// check duplicate email for new player
+		List<Player> playerList = playerRepository.findAll();
+		for(int i = 0; i < playerList.size(); i++){
+			Player temp = playerList.get(i);
+			if(temp.getEmail().equals(player.getEmail()))
+				return ResponseEntity.badRequest().build();
+		}
+		
 		if(player.getSponsor() != null){
 		    Sponsor sponsor = sponsorRepository.findOne(player.getSponsor().getId());
 		    if(sponsor != null){
 			    player.setSponsor(sponsor);
 		    }
+		    else
+		    	return ResponseEntity.badRequest().build();
 		}
-	    return playerRepository.save(player);
+		
+	    Player newplayer = playerRepository.save(player);
+	    return ResponseEntity.ok(newplayer);
 	}
 
     // Get a Player
@@ -78,11 +93,24 @@ public class PlayerController {
 
     // Delete a Player
 	@DeleteMapping("/player/{id}")
-    public ResponseEntity<Player> deleteNote(@PathVariable(value = "id") Long playerId) {
+    public ResponseEntity<Player> deletePlayer(@PathVariable(value = "id") Long playerId) {
         Player player = playerRepository.findOne(playerId);
         if(player == null) {
             return ResponseEntity.notFound().build();
         }
+        
+        List<Player> opponentList1 = player.getOpponents();
+        if(!opponentList1.isEmpty()){
+        	for(int i = 0; i < opponentList1.size(); i++){
+        		Player temp = playerRepository.findOne(opponentList1.get(i).getId());
+        		List<Player> opponentList2 = temp.getOpponents();
+        		opponentList2.remove(player);
+        		temp.setOpponents(opponentList2);
+        		playerRepository.save(temp);
+        	}
+        }
+        
+        player.setOpponents(new ArrayList<Player>());
 
         playerRepository.delete(player);
         return ResponseEntity.ok().body(player);

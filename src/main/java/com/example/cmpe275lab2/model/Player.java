@@ -27,7 +27,6 @@ public class Player implements Serializable{
     private String lastname;
     
     @NotBlank
-    @Column(unique = true)
     private String email;
     
     private String description;

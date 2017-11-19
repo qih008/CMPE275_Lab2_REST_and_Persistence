@@ -42,7 +42,7 @@ public class SponsorController {
 
     // Update a Sponsor
 	@PutMapping("/sponsor/{id}")
-	public ResponseEntity<Sponsor> updatePlayer(@PathVariable(value = "id") Long sponsorId, 
+	public ResponseEntity<Sponsor> updateSponsor(@PathVariable(value = "id") Long sponsorId, 
 	                                       @Valid @RequestBody Sponsor sponsorDetails) {
 	    Sponsor sponsor = sponsorRepository.findOne(sponsorId);
 	    if(sponsor == null) {
@@ -58,7 +58,7 @@ public class SponsorController {
 
     // Delete a Sponsor
 	@DeleteMapping("/sponsor/{id}")
-    public ResponseEntity<Sponsor> deleteNote(@PathVariable(value = "id") Long sponsorId) {
+    public ResponseEntity<Sponsor> deleteSponsor(@PathVariable(value = "id") Long sponsorId) {
         Sponsor sponsor = sponsorRepository.findOne(sponsorId);
         if(sponsor == null) {
             return ResponseEntity.notFound().build();

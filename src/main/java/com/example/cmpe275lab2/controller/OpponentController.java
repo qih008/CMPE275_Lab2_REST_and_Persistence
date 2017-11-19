@@ -46,7 +46,7 @@ public class OpponentController {
 	}
 	
 	
-	// Add an opponent
+	// Delete an opponent
 	@DeleteMapping("/opponents/{id1}/{id2}")
 	public ResponseEntity<Player> deleteOpponentById(@PathVariable(value = "id1") Long playerId1,
 			                                    @PathVariable(value = "id2") Long playerId2) {
