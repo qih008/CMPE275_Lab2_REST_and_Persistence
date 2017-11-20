@@ -29,17 +29,18 @@ public class OpponentController {
 	        return ResponseEntity.notFound().build();
 	    }
 		
+		//The opponent relationship is symmetric
 		List<Player> opponentList1 = player1.getOpponents();
 		List<Player> opponentList2 = player2.getOpponents();
 		if(opponentList1.contains(player2))
-			return ResponseEntity.ok().build();
+			return ResponseEntity.ok().build();       // db already have this relationship
 		else{
 			opponentList1.add(player2);
 			opponentList2.add(player1);
 		}
 		player1.setOpponents(opponentList1);
 		player2.setOpponents(opponentList2);
-		Player updatedPlayer1 = playerRepository.save(player1);
+		Player updatedPlayer1 = playerRepository.save(player1);  // updated player info with opponentList
 		Player updatedPlayer2 = playerRepository.save(player2);
 		
 		return ResponseEntity.ok().body(updatedPlayer1);
@@ -59,8 +60,8 @@ public class OpponentController {
 		
 		List<Player> opponentList1 = player1.getOpponents();
 		List<Player> opponentList2 = player2.getOpponents();
-		if(opponentList1.contains(player2)){
-			opponentList1.remove(player2);
+		if(opponentList1.contains(player2)){            // since opponent relationship is symmetric, remove both player
+			opponentList1.remove(player2);              // from each others opponent list
 			opponentList2.remove(player1);
 		}
 		else{

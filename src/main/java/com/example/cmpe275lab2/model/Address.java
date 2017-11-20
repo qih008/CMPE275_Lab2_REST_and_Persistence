@@ -2,6 +2,7 @@ package com.example.cmpe275lab2.model;
 
 import javax.persistence.*;
 
+// entire class embedded into player and sponsor classes
 @Embeddable
 public class Address {
 	

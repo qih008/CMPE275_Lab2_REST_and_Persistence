@@ -56,9 +56,9 @@ public class PlayerController {
 		
 		
 		//System.out.print(player.getId());
-		if(sponsor_id != null){
+		if(sponsor_id != null){                           // check if params contain sponsor_id
 		    Sponsor sponsor = sponsorRepository.findOne(sponsor_id);
-		    if(sponsor != null){
+		    if(sponsor != null){                          // check whether exist sponsor have this id
 			    player.setSponsor(sponsor);
 		    }
 		    else
@@ -78,7 +78,7 @@ public class PlayerController {
 		player.setDescription(description);
 		
 		
-	    Player newplayer = playerRepository.save(player);
+	    Player newplayer = playerRepository.save(player);    // save new create play
 	    return ResponseEntity.ok(newplayer);
 	}
 
@@ -118,10 +118,10 @@ public class PlayerController {
 	 			return ResponseEntity.badRequest().build();
 	 	}
 	    
-	    if(sponsor_id != null){
+	    if(sponsor_id != null){                                            // check params have sponsor_id
 	    	//System.out.println(sponsor_id);
 	    	
-	        Sponsor sponsor = sponsorRepository.findOne(sponsor_id);
+	        Sponsor sponsor = sponsorRepository.findOne(sponsor_id);       // check if sponsor exist
 		    if(sponsor != null){
 			    player.setSponsor(sponsor);
 			    //System.out.println("!!!!!!!!!!!!");
@@ -145,7 +145,7 @@ public class PlayerController {
 		player.setDescription(description);	
 		
 	    
-	    Player updatedPlayer = playerRepository.save(player);
+	    Player updatedPlayer = playerRepository.save(player);          // save updated player
 	    return ResponseEntity.ok(updatedPlayer);
 	}
 
@@ -158,7 +158,7 @@ public class PlayerController {
         }
         
         List<Player> opponentList1 = player.getOpponents();
-        if(!opponentList1.isEmpty()){
+        if(!opponentList1.isEmpty()){                                 // remove any reference of this player
         	for(int i = 0; i < opponentList1.size(); i++){
         		Player temp = playerRepository.findOne(opponentList1.get(i).getId());
         		List<Player> opponentList2 = temp.getOpponents();

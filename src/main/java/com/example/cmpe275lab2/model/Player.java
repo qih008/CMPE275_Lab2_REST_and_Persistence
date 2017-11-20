@@ -16,26 +16,26 @@ import java.util.ArrayList;
 @Table(name = "player")
 public class Player implements Serializable{
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)   // auto generate key ID
     private Long id;
 	
 	@NotBlank
-    private String firstname;
+    private String firstname;         // require element, can't be null or blank
 	
 	@NotBlank
-    private String lastname;
+    private String lastname;          // require element
     
     @NotBlank
-    private String email;
+    private String email;             // require element, check unique in controller
     
     private String description;
     
     @Embedded
-    private Address address = new Address();
+    private Address address = new Address();    // embedded from address class
     
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sponsor_Id")
-    private Sponsor sponsor;
+    private Sponsor sponsor;                   // one player can only map to one sponsor
     
     @ManyToMany
     @JoinTable(
@@ -45,7 +45,7 @@ public class Player implements Serializable{
         uniqueConstraints = @UniqueConstraint(columnNames = {"player_id", "opponent_id"})
     )
     @JsonIgnoreProperties("opponents")
-    private List<Player> opponents = new ArrayList<>();
+    private List<Player> opponents = new ArrayList<>();      // self join to create a table that contain opponent relationship
     
     // constructors, setters, getters, etc.
     

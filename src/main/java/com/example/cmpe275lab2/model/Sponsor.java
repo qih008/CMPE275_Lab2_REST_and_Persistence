@@ -19,20 +19,20 @@ import java.util.List;
 //@JsonIgnoreProperties(value = {"players"}, allowGetters = true)
 public class Sponsor implements Serializable{
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)       // auto generate key ID
     private Long id;
 	
 	@NotBlank
-    private String name;
+    private String name;                                 // require element, can't be null or blank
 	
     private String description;
     
     @Embedded
-    private Address address = new Address();
+    private Address address = new Address();             // embedded from address class
     
     @OneToMany(mappedBy = "sponsor")
     @JsonIgnore
-    private List<Player> players = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();    // one sponsor can map to many player
     
     // constructors, setters, getters, etc.
     
