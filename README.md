@@ -6,6 +6,11 @@ Date: 11/19/2017
 
 API Path: ec2-54-67-125-74.us-west-1.compute.amazonaws.com:8080/
 
+the only different between this source code and online verison is db username and password.
+This source code is using localhost as api path, and local mysql as database,
+the online version is using EC2 url as api path, and AWS RDS as database,
+because I don't want to upload my RDS username and pasword online.
+
 Screenshots are in folder screenshots under project root dir
 
 Hope this ec2 can constant working correctly for the next three week,
